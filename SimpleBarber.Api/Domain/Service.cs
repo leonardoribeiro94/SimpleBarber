@@ -7,6 +7,5 @@
         public string Description { get; set; } = string.Empty;
         public int EstimateTime { get; set; }
         public decimal Price { get; set; }
-        public ICollection<Client> Clients { get; } = new List<Client>().AsReadOnly();
     }
 }

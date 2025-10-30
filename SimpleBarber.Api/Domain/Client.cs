@@ -9,6 +9,6 @@
         public int UserId { get; set; }
         public User? User { get; set; }  
         public DateOnly BirthDate { get; set; } 
-        public ICollection<Service> Services { get; } = new List<Service>().AsReadOnly();
+        public ICollection<Appointment> Appointments { get; } = new List<Appointment>().AsReadOnly();
     }
 }
