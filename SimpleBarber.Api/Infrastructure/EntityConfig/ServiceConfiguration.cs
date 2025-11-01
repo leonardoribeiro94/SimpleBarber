@@ -24,7 +24,7 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
                 .IsRequired();
             
             builder.Property(x => x.Price)
-                .HasColumnType("numeric(18,2)")
+                .HasPrecision(18,2)
                 .IsRequired();
         }
     }

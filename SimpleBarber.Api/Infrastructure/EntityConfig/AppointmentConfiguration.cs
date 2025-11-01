@@ -21,8 +21,9 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
                 .WithMany();
 
             //N:1
-            builder.HasMany(s => s.Services)
-                .WithOne();
+            builder.HasMany(a => a.Services)
+                .WithMany(s => s.Appointments)
+                .UsingEntity(j => j.ToTable("AppointmentServices"));
         }
     }
 }
