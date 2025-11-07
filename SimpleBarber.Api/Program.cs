@@ -1,3 +1,4 @@
+using SimpleBarber.Api.Domain;
 using SimpleBarber.Api.Extensions.cs;
 using SimpleBarber.Api.Infrastructure.Repositories;
 using SimpleBarber.Api.Services;
@@ -13,13 +14,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // dependency injections
-builder.Services.AddScoped<JwtServices,  JwtServices>();
-builder.Services.AddScoped<IdentityService,  IdentityService>();
+builder.Services.AddScoped<JwtServices, JwtServices>();
+builder.Services.AddScoped<ServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<ClientRepository, ClientRepository>();
 
 //add dbcontext
 var cnnstring = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddCustomDbContext(cnnstring??"");
+builder.Services.AddCustomDbContext(cnnstring ?? "");
 
 // add identity service
 builder.Services.AddCustomIdentity();
