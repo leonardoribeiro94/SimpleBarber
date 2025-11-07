@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimpleBarber.Api.DTO;
 using SimpleBarber.Api.Services;
@@ -11,12 +9,10 @@ namespace SimpleBarber.Api.Controllers;
 public class AuthorizeController : ControllerBase
 {
     private readonly IdentityService _identityService;
-    private readonly JwtServices _jwtServices;
 
-    public AuthorizeController(IdentityService identityService, JwtServices jwtServices)
+    public AuthorizeController(IdentityService identityService)
     {
         _identityService = identityService;
-        _jwtServices = jwtServices;
     }
 
     [HttpPost]
@@ -28,25 +24,5 @@ public class AuthorizeController : ControllerBase
             BadRequest("Email or password is incorrect");
 
         return Ok(result);
-    }
-        
-    [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] UserDto userDto)
-    {
-        var user = new IdentityUser
-        {
-            UserName = userDto.Email,
-            Email = userDto.Email,
-            EmailConfirmed = true
-        };
-
-        var result = await _identityService.CreateAsync(user, userDto.Password);
-
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
-        await _identityService.SignInAsync(user);
-        
-        return Ok(_jwtServices.GenerateToken(userDto));
     }
 }
