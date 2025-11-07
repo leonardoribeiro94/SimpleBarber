@@ -1,4 +1,6 @@
-﻿namespace SimpleBarber.Api.Domain
+﻿using SimpleBarber.Api.DTO;
+
+namespace SimpleBarber.Api.Domain
 {
     public class Client
     {
@@ -10,5 +12,13 @@
         public User? User { get; set; }  
         public DateOnly BirthDate { get; set; } 
         public ICollection<Appointment> Appointments { get; } = new List<Appointment>().AsReadOnly();
+
+        public void Update(string name, string phone, string email, DateOnly birthDate)
+        {
+           Name = name ?? throw new ArgumentNullException(nameof(name));
+           Phone = phone ?? throw new ArgumentNullException(nameof(phone));
+           Email = email ?? throw new ArgumentNullException(nameof(email));
+           BirthDate = birthDate;
+        }
     }
 }
