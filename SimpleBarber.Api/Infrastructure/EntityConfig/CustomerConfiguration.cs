@@ -4,22 +4,22 @@ using SimpleBarber.Api.Domain;
 
 namespace SimpleBarber.Api.Infrastructure.EntityConfig
 {
-    public class ClientConfiguration : IEntityTypeConfiguration<Client>
+    public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     {
-        public void Configure(EntityTypeBuilder<Client> builder)
+        public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Name)
-                .HasMaxLength(100)
+                .HasColumnType("varchar(150)")
                 .IsRequired();
 
             builder.Property(c => c.Phone)
-                .HasMaxLength(20)
+                .HasColumnType("varchar(20)")
                 .IsRequired();
 
             builder.Property(c => c.Email)
-                .HasMaxLength(120)
+                .HasColumnType("varchar(150)")
                 .IsRequired();
 
             builder.Property(c => c.BirthDate)
@@ -31,7 +31,7 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
             // 1:1 map
             builder.HasOne(c => c.User)
                 .WithOne(u => u.Client)
-                .HasForeignKey<Client>(c => c.UserId)
+                .HasForeignKey<Customer>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

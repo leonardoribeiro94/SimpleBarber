@@ -7,28 +7,28 @@ namespace SimpleBarber.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientController : ControllerBase
+    public class CustomerController : ControllerBase
     {
-        private readonly ClientRepository _repository;
+        private readonly CustomerRepository _repository;
 
-        public ClientController(ClientRepository repository)
+        public CustomerController(CustomerRepository repository)
         {
             _repository = repository;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ClientDto clientDto)
+        public async Task<IActionResult> Post([FromBody] CustomerDto customerDto)
         {
-            var client = new Client()
+            var client = new Customer()
             {
-                Name = clientDto.Name,
-                Email = clientDto.Email,
-                Phone = clientDto.Phone,
-                BirthDate = clientDto.BirthDate
+                Name = customerDto.Name,
+                Email = customerDto.Email,
+                Phone = customerDto.Phone,
+                BirthDate = customerDto.BirthDate
             };
 
             await _repository.CreateAsync(client);
-            return Ok(clientDto);
+            return Created();
         }
 
         [HttpPut("{id:int}")]
