@@ -12,8 +12,8 @@ using SimpleBarber.Api.Infrastructure.Repositories;
 namespace SimpleBarber.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251103212350_CreateIdentityStructure")]
-    partial class CreateIdentityStructure
+    [Migration("20251107220908_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace SimpleBarber.Api.Migrations
 
                     b.HasIndex("ServicesId");
 
-                    b.ToTable("AppointmentService");
+                    b.ToTable("AppointmentServices", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -246,23 +246,26 @@ namespace SimpleBarber.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClientId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateAppointment")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("varchar(500)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Appointments");
                 });
 
-            modelBuilder.Entity("SimpleBarber.Api.Domain.Client", b =>
+            modelBuilder.Entity("SimpleBarber.Api.Domain.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,15 +278,15 @@ namespace SimpleBarber.Api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -293,7 +296,7 @@ namespace SimpleBarber.Api.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Clients");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("SimpleBarber.Api.Domain.Service", b =>
@@ -306,21 +309,23 @@ namespace SimpleBarber.Api.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<int>("EstimateTime")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services");
+                    b.ToTable("service", (string)null);
                 });
 
             modelBuilder.Entity("SimpleBarber.Api.Domain.User", b =>
@@ -333,7 +338,7 @@ namespace SimpleBarber.Api.Migrations
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -412,27 +417,27 @@ namespace SimpleBarber.Api.Migrations
 
             modelBuilder.Entity("SimpleBarber.Api.Domain.Appointment", b =>
                 {
-                    b.HasOne("SimpleBarber.Api.Domain.Client", "Client")
+                    b.HasOne("SimpleBarber.Api.Domain.Customer", "Customer")
                         .WithMany("Appointments")
-                        .HasForeignKey("ClientId")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("SimpleBarber.Api.Domain.Client", b =>
+            modelBuilder.Entity("SimpleBarber.Api.Domain.Customer", b =>
                 {
                     b.HasOne("SimpleBarber.Api.Domain.User", "User")
                         .WithOne("Client")
-                        .HasForeignKey("SimpleBarber.Api.Domain.Client", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("SimpleBarber.Api.Domain.Customer", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SimpleBarber.Api.Domain.Client", b =>
+            modelBuilder.Entity("SimpleBarber.Api.Domain.Customer", b =>
                 {
                     b.Navigation("Appointments");
                 });

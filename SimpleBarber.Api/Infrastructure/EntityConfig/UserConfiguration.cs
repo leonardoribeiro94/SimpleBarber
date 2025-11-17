@@ -11,6 +11,7 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Login)
+                .HasColumnType("varchar(150)")
                 .IsRequired();
 
             builder.Property(x => x.Password)

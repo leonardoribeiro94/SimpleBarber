@@ -6,7 +6,7 @@ namespace SimpleBarber.Api.Infrastructure.Repositories;
 
 public class AppDbContext : IdentityDbContext
 {
-    public DbSet<Client> Clients { get; set; }
+    public DbSet<Customer> Customers { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
 
@@ -14,5 +14,12 @@ public class AppDbContext : IdentityDbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        // Ef search automatically all classes that implementing IEntityTypeConfiguration<> in the same assembly
+        builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        base.OnModelCreating(builder);
     }
 }

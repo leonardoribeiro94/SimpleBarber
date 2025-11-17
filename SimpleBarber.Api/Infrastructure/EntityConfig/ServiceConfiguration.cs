@@ -12,13 +12,12 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
                 .HasKey(s => s.Id);
             
             builder.Property(x => x.Name)
-                .HasMaxLength(100)
-                .HasColumnType("varchar")
+                .HasColumnType("varchar(100)")
                 .IsRequired();
 
             builder.Property(x => x.Description)
                 .HasMaxLength(200)
-                .HasColumnType("varchar");
+                .HasColumnType("varchar(500)");
 
             builder.Property(x => x.EstimateTime)
                 .IsRequired();

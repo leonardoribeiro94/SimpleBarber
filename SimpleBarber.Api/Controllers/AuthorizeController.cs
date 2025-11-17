@@ -8,11 +8,13 @@ namespace SimpleBarber.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthorizeController : ControllerBase
 {
+    private readonly JwtServices _jwtServices;
     private readonly IdentityService _identityService;
 
-    public AuthorizeController(IdentityService identityService)
+    public AuthorizeController(IdentityService identityService,  JwtServices jwtServices)
     {
         _identityService = identityService;
+        _jwtServices = jwtServices;
     }
 
     [HttpPost]
@@ -23,6 +25,6 @@ public class AuthorizeController : ControllerBase
         if (!result.Succeeded)
             BadRequest("Email or password is incorrect");
 
-        return Ok(result);
+        return Ok(_jwtServices.GenerateToken(userDto));
     }
 }
