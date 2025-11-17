@@ -11,12 +11,14 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerConfiguration();
 
 // dependency injections
 builder.Services.AddScoped<JwtServices, JwtServices>();
+builder.Services.AddScoped<IdentityService, IdentityService>();
 builder.Services.AddScoped<ServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<ClientRepository, ClientRepository>();
+builder.Services.AddScoped<CustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<AppointmentRepository, AppointmentRepository>();
 
 //add dbcontext
 var cnnstring = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -27,7 +29,10 @@ builder.Services.AddCustomIdentity();
 
 //add jwt configurations
 var jwtSettings = builder.Configuration.GetSection("TokenConfiguration").Get<JwtTokenSettings>();
-builder.Services.AddCustomJwtAuthentication(jwtSettings.Audience, jwtSettings.Issuer, jwtSettings.Key);
+builder.Services.AddCustomJwtAuthentication(jwtSettings);
+
+builder.Services.Configure<JwtTokenSettings>(
+    builder.Configuration.GetSection("TokenConfiguration"));
 
 var app = builder.Build();
 
