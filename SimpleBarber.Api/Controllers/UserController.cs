@@ -23,13 +23,16 @@ namespace SimpleBarber.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserDto userDto)
         {
+            if(userDto.Password != userDto.ConfirmPassword)
+                return BadRequest("The passwords do not match.");
+            
             var user = new IdentityUser
             {
                 UserName = userDto.Email,
                 Email = userDto.Email,
                 EmailConfirmed = true
             };
-
+            
             var result = await _identityService.CreateAsync(user, userDto.Password);
 
             if (!result.Succeeded)
