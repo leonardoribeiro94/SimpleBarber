@@ -13,12 +13,20 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
             builder.Property(x => x.DateAppointment)
                 .IsRequired();
 
+            builder.Property(x => x.Notes)
+                .HasColumnType("varchar(500)")
+                .IsRequired(false);
+            
             builder.Property(x => x.Status)
                 .IsRequired();
-
+            
+            builder.Property(x => x.CustomerId)
+                .IsRequired();
+            
             // 1:N
-            builder.HasOne(a => a.Client)
-                .WithMany();
+            builder.HasOne(a => a.Customer)
+                .WithMany(c => c.Appointments)
+                .HasForeignKey(c => c.CustomerId);
 
             //N:1
             builder.HasMany(a => a.Services)
