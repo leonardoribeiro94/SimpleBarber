@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleBarber.Api.DTO;
 using SimpleBarber.Api.Services;
@@ -8,23 +9,30 @@ namespace SimpleBarber.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthorizeController : ControllerBase
 {
-    private readonly JwtServices _jwtServices;
-    private readonly IdentityService _identityService;
+    private readonly AuthService _authService;
 
-    public AuthorizeController(IdentityService identityService,  JwtServices jwtServices)
+    public AuthorizeController(AuthService authService)
     {
-        _identityService = identityService;
-        _jwtServices = jwtServices;
+        _authService = authService;
     }
 
     [HttpPost]
-    public async Task<ActionResult> Login([FromBody] UserDto userDto)
+    [AllowAnonymous] 
+    public async Task<ActionResult> Login([FromBody] LoginDto dto)
     {
-        var result = await _identityService.LoginAsync(userDto.Email, userDto.Password);
+        var token = await _authService.LoginAsync(dto.login, dto.password);
 
-        if (!result.Succeeded)
-            BadRequest("Email or password is incorrect");
+        if (token is null)
+            Unauthorized("Email or password is incorrect");
 
-        return Ok(_jwtServices.GenerateToken(userDto));
+        return Ok(token);
+    }
+    
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] UserDto dto)
+    {
+        var user = await _authService.RegisterAsync(dto);
+        return CreatedAtAction(nameof(Register), new { id = user.Id }, new { user.Id, user.Login, user.Role });
     }
 }

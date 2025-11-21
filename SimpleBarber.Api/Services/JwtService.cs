@@ -9,28 +9,30 @@ using SimpleBarber.Api.Settings;
 
 namespace SimpleBarber.Api.Services;
 
-public class JwtServices
+public class JwtService
 {
     private readonly JwtTokenSettings _jwtTokenSettings;
 
-    public JwtServices(IOptions<JwtTokenSettings> jwtTokenSettings)
+    public JwtService(IOptions<JwtTokenSettings> jwtTokenSettings)
     {
         _jwtTokenSettings = jwtTokenSettings.Value;
     }
 
-    public UserTokenDto GenerateToken(UserDto userInfo)
+    public UserTokenDto GenerateToken(User user)
     {
         //Define declarações do usuário
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
-            new Claim("Barberaria", "UsuarioBarbearia"),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.UniqueName, user.Login),
+            new(ClaimTypes.Name, user.Login)
         };
 
+        if (!string.IsNullOrWhiteSpace(user.Role))
+            claims.Add(new Claim(ClaimTypes.Role, user.Role));
+
         //gera uma chave com base em um algoritmo simetrico
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_jwtTokenSettings.Key));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtTokenSettings.Key));
 
         //gera a assinatura digital do token usando o algoritmo Hmac e a chave privada
         var credenciais = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -47,9 +49,9 @@ public class JwtServices
             signingCredentials: credenciais);
 
         //retorna os dados com o token e informacoes
-        return new UserTokenDto(true, 
-            expiration, 
-            new JwtSecurityTokenHandler().WriteToken(token), 
+        return new UserTokenDto(true,
+            expiration,
+            new JwtSecurityTokenHandler().WriteToken(token),
             "Token JWT OK");
     }
 }

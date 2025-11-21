@@ -13,8 +13,16 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
             builder.Property(x => x.Login)
                 .HasColumnType("varchar(150)")
                 .IsRequired();
+            
+            builder.HasIndex(x  => x.Login)
+                .IsUnique();
 
-            builder.Property(x => x.Password)
+            builder.Property(x => x.PasswordHash)
+                .HasColumnType("varchar(150)")
+                .IsRequired();
+            
+            builder.Property(x => x.Role)
+                .HasColumnType("varchar(150)")
                 .IsRequired();
         }
     }

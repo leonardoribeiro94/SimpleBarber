@@ -337,7 +337,7 @@ namespace SimpleBarber.Api.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(150)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -426,7 +426,7 @@ namespace SimpleBarber.Api.Migrations
             modelBuilder.Entity("SimpleBarber.Api.Domain.Customer", b =>
                 {
                     b.HasOne("SimpleBarber.Api.Domain.User", "User")
-                        .WithOne("Client")
+                        .WithOne("Customer")
                         .HasForeignKey("SimpleBarber.Api.Domain.Customer", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -441,7 +441,7 @@ namespace SimpleBarber.Api.Migrations
 
             modelBuilder.Entity("SimpleBarber.Api.Domain.User", b =>
                 {
-                    b.Navigation("Client");
+                    b.Navigation("Customer");
                 });
 #pragma warning restore 612, 618
         }

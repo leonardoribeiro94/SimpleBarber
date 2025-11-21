@@ -4,7 +4,9 @@
     {
         public int Id { get; set; }
         public string Login { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public Customer? Client { get; set; }
+        public string PasswordHash { get; set; } = string.Empty;
+        public string Role { get; set; } = "customer"; // admin, barber, customer
+        
+        public Customer? Customer { get; set; }
     }
 }

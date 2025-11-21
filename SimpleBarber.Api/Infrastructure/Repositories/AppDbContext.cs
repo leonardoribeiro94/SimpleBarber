@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SimpleBarber.Api.Domain;
 
 namespace SimpleBarber.Api.Infrastructure.Repositories;
 
-public class AppDbContext : IdentityDbContext
+public class AppDbContext : DbContext
 {
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Service> Services { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
 
 

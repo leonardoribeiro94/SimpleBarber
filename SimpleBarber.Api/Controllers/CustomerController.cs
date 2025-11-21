@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SimpleBarber.Api.Domain;
 using SimpleBarber.Api.DTO;
 using SimpleBarber.Api.Infrastructure.Repositories;
@@ -6,6 +7,7 @@ using SimpleBarber.Api.Infrastructure.Repositories;
 namespace SimpleBarber.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
@@ -45,7 +47,6 @@ namespace SimpleBarber.Api.Controllers
             await _repository.UpdateAsync(client);
             return NoContent();
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

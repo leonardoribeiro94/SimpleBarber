@@ -30,7 +30,7 @@ namespace SimpleBarber.Api.Infrastructure.EntityConfig
 
             // 1:1 map
             builder.HasOne(c => c.User)
-                .WithOne(u => u.Client)
+                .WithOne(u => u.Customer)
                 .HasForeignKey<Customer>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

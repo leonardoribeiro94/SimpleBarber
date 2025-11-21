@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleBarber.Api.Domain;
 using SimpleBarber.Api.DTO;
@@ -6,6 +7,7 @@ using SimpleBarber.Api.Infrastructure.Repositories;
 namespace SimpleBarber.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ServiceController : ControllerBase
 {

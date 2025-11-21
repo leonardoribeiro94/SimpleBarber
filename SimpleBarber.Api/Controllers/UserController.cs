@@ -1,7 +1,8 @@
-
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SimpleBarber.Api.Domain;
 using SimpleBarber.Api.DTO;
+using SimpleBarber.Api.Infrastructure.Repositories;
 using SimpleBarber.Api.Services;
 
 namespace SimpleBarber.Api.Controllers
@@ -10,37 +11,46 @@ namespace SimpleBarber.Api.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IdentityService _identityService;
-        private readonly JwtServices _jwtServices;
+        private readonly UserRepository _userRepository;
+        private readonly JwtService _jwtService;
 
-        public UserController(IdentityService identityService,
-        JwtServices jwtServices)
+        public UserController(UserRepository userRepository,
+            JwtService jwtService)
         {
-            _identityService = identityService;
-            _jwtServices = jwtServices;
+            _userRepository = userRepository;
+            _jwtService = jwtService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserDto userDto)
         {
-            if(userDto.Password != userDto.ConfirmPassword)
+            if (userDto.Password != userDto.ConfirmPassword)
                 return BadRequest("The passwords do not match.");
-            
-            var user = new IdentityUser
+
+            var user = new User()
             {
-                UserName = userDto.Email,
-                Email = userDto.Email,
-                EmailConfirmed = true
+                Login = userDto.Email,
+                PasswordHash = userDto.Password
             };
-            
-            var result = await _identityService.CreateAsync(user, userDto.Password);
 
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
+            await _userRepository.CreateAsync(user);
+            return Ok(_jwtService.GenerateToken(user));
+        }
 
-            await _identityService.SignInAsync(user);
+        [HttpGet]
+        [Authorize(Roles = "Admin")] 
+        public async Task<IActionResult> GetAll()
+        {
+            var response = await _userRepository.GetAll();
+            return Ok(response);
+        }
 
-            return Ok(_jwtServices.GenerateToken(userDto));
+        [HttpGet("string:email")]
+        public async Task<IActionResult> GetByLogin(string email)
+        {
+            var response = await _userRepository.GetByLoginAsync(email);
+
+            return Ok(response);
         }
     }
 }

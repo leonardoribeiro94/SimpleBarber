@@ -14,18 +14,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
 
 // dependency injections
-builder.Services.AddScoped<JwtServices, JwtServices>();
-builder.Services.AddScoped<IdentityService, IdentityService>();
+builder.Services.AddScoped<UserRepository, UserRepository>();
 builder.Services.AddScoped<ServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<CustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<AppointmentRepository, AppointmentRepository>();
 
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<AuthService>();
+
 //add dbcontext
 var cnnstring = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddCustomDbContext(cnnstring ?? "");
-
-// add identity service
-builder.Services.AddCustomIdentity();
+builder.Services.AddCustomDbContext(cnnstring ?? ""); 
 
 //add jwt configurations
 var jwtSettings = builder.Configuration.GetSection("TokenConfiguration").Get<JwtTokenSettings>();

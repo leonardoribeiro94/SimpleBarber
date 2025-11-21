@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleBarber.Api.Domain;
 using SimpleBarber.Api.DTO;
@@ -6,6 +7,7 @@ using SimpleBarber.Api.Infrastructure.Repositories;
 namespace SimpleBarber.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class AppointmentController : ControllerBase
 {
@@ -21,7 +23,8 @@ public class AppointmentController : ControllerBase
         _serviceRepository = serviceRepository;
         _customerRepository = customerRepository;
     }
-
+    
+    [HttpGet]
     public async Task<IActionResult> Get()
     {
         var appointments = await _appointmentRepository.GetAppointments();
@@ -29,7 +32,7 @@ public class AppointmentController : ControllerBase
         return Ok(appointments);
     }
 
-    [HttpGet]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var appointment = _appointmentRepository.GetById(id);
@@ -74,7 +77,6 @@ public class AppointmentController : ControllerBase
         appointment.DateAppointment = dto.DateAppointment;
         appointment.Status = dto.Status;
         appointment.Customer = await _customerRepository.GetByIdAsync(dto.CustomerId);
-
 
         foreach (var serviceDto in dto.Services)
         {
