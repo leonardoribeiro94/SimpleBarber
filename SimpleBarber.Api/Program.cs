@@ -1,4 +1,3 @@
-using SimpleBarber.Api.Domain;
 using SimpleBarber.Api.Extensions.cs;
 using SimpleBarber.Api.Infrastructure.Repositories;
 using SimpleBarber.Api.Services;

@@ -27,12 +27,4 @@ public class AuthorizeController : ControllerBase
 
         return Ok(token);
     }
-    
-    [HttpPost("register")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] UserDto dto)
-    {
-        var user = await _authService.RegisterAsync(dto);
-        return CreatedAtAction(nameof(Register), new { id = user.Id }, new { user.Id, user.Login, user.Role });
-    }
 }
